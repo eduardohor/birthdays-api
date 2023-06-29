@@ -14,4 +14,4 @@ Route::middleware('auth:api')->group(function () {
 
 Route::post('login', [AuthController::class, 'login']);
 
-Route::resource('users', UserController::class);
+Route::resource('user', UserController::class);

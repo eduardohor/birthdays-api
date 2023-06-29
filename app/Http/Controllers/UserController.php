@@ -20,6 +20,9 @@ class UserController extends Controller
    */
   public function index()
   {
+    $users = $this->user->all();
+
+    return response()->json($users, 200);
   }
 
   /**
@@ -47,7 +50,11 @@ class UserController extends Controller
    */
   public function show(string $id)
   {
-    //
+    if (!$user = $this->user->find($id)) {
+      return response()->json(['error' => 'Usuário não encontrado'], 404);
+    }
+
+    return response()->json(['user' => $user], 200);
   }
 
   /**
