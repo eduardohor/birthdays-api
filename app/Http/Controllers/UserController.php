@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\StoreUpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -26,21 +26,13 @@ class UserController extends Controller
   }
 
   /**
-   * Show the form for creating a new resource.
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
    * Store a newly created resource in storage.
    */
-  public function store(StoreUserRequest $request)
+  public function store(StoreUpdateUserRequest $request)
   {
-    $data = $request->all();
+    $dataUser = $request->all();
 
-    $user = $this->user->create($data);
+    $user = $this->user->create($dataUser);
 
     return response()->json(['message' => 'Usuário criado com sucesso!', 'user' => $user], 201);
   }
@@ -57,20 +49,21 @@ class UserController extends Controller
     return response()->json(['user' => $user], 200);
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   */
-  public function edit(string $id)
-  {
-    //
-  }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, string $id)
+  public function update(StoreUpdateUserRequest $request, string $id)
   {
-    //
+    $dataUser = $request->all();
+
+    if (!$user = $this->user->find($id)) {
+      return response()->json(['error' => 'Não foi possível fazer a atualização. Usuário não encontrado'], 404);
+    }
+
+    $user->update($dataUser);
+
+    return response()->json(['sucess' => 'Usuário atualizado com sucesso!', 'user' => $user], 200);
   }
 
   /**

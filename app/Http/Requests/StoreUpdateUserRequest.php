@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class StoreUpdateUserRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -21,13 +22,31 @@ class StoreUserRequest extends FormRequest
    */
   public function rules(): array
   {
-    return [
+
+    $rules =  [
       'name' => 'required|string|min:5|max:255',
-      'email' => 'required|email|unique:users|max:100',
+      'email' => 'required|email|max:100', Rule::unique('email')->ignore($this->id),
       'password' => 'required|min:5|max:45',
       'telephone' => 'string|size:11',
       'is_admin' => 'boolean'
     ];
+
+    $dynamicRules = [];
+
+    $method = $this->method();
+    $inputs = $this->all();
+
+    if ($method === 'PATCH') {
+      foreach ($rules as $input => $rule) {
+        if (array_key_exists($input, $inputs)) {
+          $dynamicRules[$input] = $rule;
+        }
+      }
+
+      return $dynamicRules;
+    }
+
+    return $rules;
   }
 
   /**
