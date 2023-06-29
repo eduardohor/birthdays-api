@@ -71,6 +71,12 @@ class UserController extends Controller
    */
   public function destroy(string $id)
   {
-    //
+    if (!$user = $this->user->find($id)) {
+      return response()->json(['error' => 'Não foi realizar a remoção. Usuário não encontrado'], 404);
+    }
+
+    $user->delete();
+
+    return response()->json(['success' => 'Usuário removido com sucesso!'], 200);
   }
 }
